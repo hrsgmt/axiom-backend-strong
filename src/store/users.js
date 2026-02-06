@@ -1,18 +1,17 @@
-import { v4 as uuid } from "uuid";
+import crypto from "crypto";
 
-export const users = [];
+const users = [];
 
-export function createUser(email, password) {
+export function createUser({ email }) {
   const user = {
-    id: uuid(),
+    id: crypto.randomUUID(),
     email,
-    password,
     createdAt: Date.now()
   };
   users.push(user);
   return user;
 }
 
-export function findUser(email) {
-  return users.find(u => u.email === email);
+export function listUsers() {
+  return users;
 }

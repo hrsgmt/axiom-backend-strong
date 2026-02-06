@@ -1,9 +1,11 @@
+import usersRoutes from "./routes/users.js";
 import Fastify from "fastify";
 import cors from "@fastify/cors";
 
 const app = Fastify({ logger: true });
 
 await app.register(cors, { origin: true });
+await app.register(usersRoutes, { prefix: "/api" });
 
 app.get("/", async () => {
   return { ok: true, service: "axiom-backend-final" };
