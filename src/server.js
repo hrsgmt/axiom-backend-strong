@@ -1,21 +1,29 @@
-import meRoute from "./routes/me.js";
-import authRoutes from "./routes/auth.js";
-import usersRoutes from "./routes/users.js";
+import cors from "cors";
+import "dotenv/config";
 import Fastify from "fastify";
 import cors from "@fastify/cors";
+import cookie from "@fastify/cookie";
+
+import loginRoute from "./routes/auth/login.js";
+import refreshRoute from "./routes/auth/refresh.js";
+import logoutRoute from "./routes/auth/logout.js";
+import meRoute from "./routes/me.js";
 
 const app = Fastify({ logger: true });
+app.use(cors({ origin: "https://axiom-frontend-l53b.onrender.com", credentials: true }));
 
-await app.register(cors, { origin: true });
-await app.register(usersRoutes, { prefix: "/api" });
-await app.register(authRoutes, { prefix: "/api" });
+await app.register(cors, {
+  origin: true,
+  credentials: true
+});
+
+await app.register(cookie);
+
+await app.register(loginRoute, { prefix: "/api/auth" });
+await app.register(refreshRoute, { prefix: "/api/auth" });
+await app.register(logoutRoute, { prefix: "/api/auth" });
 await app.register(meRoute, { prefix: "/api" });
 
-app.get("/", async () => {
-  return { ok: true, service: "axiom-backend-final" };
-});
+app.get("/", () => ({ ok: true }));
 
-const PORT = process.env.PORT || 4000;
-app.listen({ port: PORT, host: "0.0.0.0" }, () => {
-  console.log("🚀 Server running on port", PORT);
-});
+await app.listen({ port: 4000, host: "0.0.0.0" });
